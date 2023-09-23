@@ -1,6 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox")
 require("hardhat-deploy")
 require("hardhat-deploy-ethers")
+require("@unlock-protocol/hardhat-plugin")
 require("./tasks")
 require("dotenv").config()
 

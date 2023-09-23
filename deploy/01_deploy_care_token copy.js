@@ -9,10 +9,7 @@ const wallet = new ethers.Wallet(private_key, ethers.provider)
 module.exports = async ({ deployments }) => {
     const { deploy } = deployments
 
-    console.log("deploying care token")
-
-    console.log(wallet.address)
-    const stableDiffusionCaller = await deploy("CareToken", {
+    const caretoken = await deploy("CareToken", {
         from: wallet.address,
         log: true,
     })

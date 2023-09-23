@@ -11,7 +11,7 @@
     "format": "prettier --write .",
     "coverage": "hardhat coverage --solcoverjs ./.solcover.js",
     "fuzzing": "docker run -it --rm -v $PWD:/src trailofbits/eth-security-toolbox",
-    "upload": "hardhat run scripts/putData_one.js --network mumbai",
+    "test-code": "hardhat run scripts/test.js --network goerli",
     "deploy": "hardhat --network goerli deploy"
   },
   "license": "MIT",
@@ -45,6 +45,7 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@openzeppelin/contracts": "^4.8.3",
     "@typechain/hardhat": "^6.1.2",
+    "@unlock-protocol/hardhat-plugin": "^0.1.2",
     "@zondax/filecoin-solidity": "^4.0.3",
     "axios": "^1.4.0",
     "babel-eslint": "^10.1.0",
