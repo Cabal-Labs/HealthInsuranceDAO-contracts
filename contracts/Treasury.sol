@@ -7,6 +7,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 
 contract Treasury {
+
+    struct Claim {
+        string hospitalName;
+        string patientName;
+        string medicalProcedure;
+        uint256 medicalProcedureCost;
+    }
+
+
+    mapping(uint256 => Claim) public claims; // Mapping to store claims by ID
+    uint256 public claimCounter;
     mapping(string => address) private hospitalList; //List of hostpitals that can be paid
 	mapping(uint256 => uint256) private medical_procedure_cost;
     mapping(uint256 => uint256) private medical_procedure_probability;
@@ -39,7 +50,7 @@ contract Treasury {
         return hospitalList[hospitalName];
     }
 
-    function payHospital(string memory hospitalName, uint256 paymentAmount) public onlyVoter {
+    function payHospital(string memory hospitalName, uint256 paymentAmount, string memory patientName, string memory medicalProcedure) public onlyVoter {
         require(hospitalList[hospitalName] != address(0), "hospital does not exist");
         address hospitalAddress = hospitalList[hospitalName];
 
@@ -48,8 +59,31 @@ contract Treasury {
         // Attempt to send the payment to the hospital address
         (bool success, ) = hospitalAddress.call{value: paymentAmount}("");
         require(success, "Payment failed");
+
+        claims[claimCounter] = Claim({
+            hospitalName: hospitalName,
+            patientName: patientName,
+            medicalProcedure: medicalProcedure,
+            medicalProcedureCost: paymentAmount
+        });
+
+        claimCounter++;
         
     }
+
+    function getClaim(uint256 claimId) public view returns (Claim memory) {
+        require(claimId < claimCounter, "Claim does not exist");
+        return claims[claimId];
+    }
+
+    function getAllClaims() public view returns (Claim[] memory) {
+        Claim[] memory allClaims = new Claim[](claimCounter);
+        for (uint256 i = 0; i < claimCounter; i++) {
+            allClaims[i] = claims[i];
+        }
+        return allClaims;
+    }
+
 
 	function setLoadingRate(uint256 new_loading_rate) public onlyVoter {
 		loading_rate = new_loading_rate;
