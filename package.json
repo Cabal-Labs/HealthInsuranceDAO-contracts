@@ -12,11 +12,6 @@
     "coverage": "hardhat coverage --solcoverjs ./.solcover.js",
     "fuzzing": "docker run -it --rm -v $PWD:/src trailofbits/eth-security-toolbox",
     "upload": "hardhat run scripts/putData_one.js --network mumbai",
-    "uploadAll": "hardhat run scripts/putData_all.js --network mumbai",
-    "get": "hardhat run scripts/getData.js --network mumbai",
-    "getAll": "hardhat run scripts/getData_all.js --network mumbai",
-    "bulk_fhir": "hardhat run scripts/bulkFHIR.js --network mumbai",
-	"bulk_fhir_local": "hardhat run scripts/bulkFHIRLocal.js --network mumbai",
     "deploy": "hardhat --network mumbai deploy"
   },
   "license": "MIT",
