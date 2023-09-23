@@ -9,12 +9,11 @@ import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 contract Treasury {
 
     struct Claim {
-        string hospitalName;
-        string patientName;
-        string medicalProcedure;
+        address hospital;
+        address patient_address;
+        uint256 medicalProcedure;
         uint256 medicalProcedureCost;
     }
-
 
     mapping(uint256 => Claim) public claims; // Mapping to store claims by ID
     uint256 public claimCounter;
