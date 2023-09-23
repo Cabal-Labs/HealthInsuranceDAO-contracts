@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 contract Treasury {
 
     struct Claim {
-        address hospital;
+        string hospitalName;
         address patient_address;
         uint256 medicalProcedure;
         uint256 medicalProcedureCost;
@@ -50,9 +50,9 @@ contract Treasury {
         return hospitalList[hospitalName];
     }
 
-    function payHospital(string memory hospitalName, uint256 paymentAmount, string memory patientName, string memory medicalProcedure) public onlyVoter {
-        require(hospitalList[hospitalName] != address(0), "hospital does not exist");
-        address hospitalAddress = hospitalList[hospitalName];
+    function payHospital(string memory hospital_name, uint256 paymentAmount, address _patient_address, uint256 medicalProcedure) public onlyVoter {
+        require(hospitalList[hospital_name] != address(0), "hospital does not exist");
+        address hospitalAddress = hospitalList[hospital_name];
 
        // require({{Safe account address goes here( I think it's msg.sender)}}.balance >= paymentAmount, "Insufficient funds");
 
@@ -61,8 +61,8 @@ contract Treasury {
         require(success, "Payment failed");
 
         claims[claimCounter] = Claim({
-            hospitalName: hospitalName,
-            patientName: patientName,
+            hospitalName: hospital_name,
+            patient_address: _patient_address,
             medicalProcedure: medicalProcedure,
             medicalProcedureCost: paymentAmount
         });

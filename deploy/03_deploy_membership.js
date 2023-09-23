@@ -32,12 +32,8 @@ module.exports = async ({ deployments }) => {
     }
 
     console.log("right before")
-    // const a = await unlock.createLock(lockArgs)
-    //await treasury.addMembershipToPolicy("0", a.lockAddress)
-    const b = await treasury.addMembershipToPolicy(
-        "0",
-        "0xc62dd0e35f95b2a60537f91facf18e87c3a00609"
-    )
+    const a = await unlock.createLock(lockArgs)
+    await treasury.addMembershipToPolicy("0", a.lockAddress)
     console.log("added membership to policy")
     //console.log("deployed membership:", a.lockAddress)
 }
