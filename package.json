@@ -12,7 +12,7 @@
     "coverage": "hardhat coverage --solcoverjs ./.solcover.js",
     "fuzzing": "docker run -it --rm -v $PWD:/src trailofbits/eth-security-toolbox",
     "upload": "hardhat run scripts/putData_one.js --network mumbai",
-    "deploy": "hardhat --network mumbai deploy"
+    "deploy": "hardhat --network goerli deploy"
   },
   "license": "MIT",
   "devDependencies": {
