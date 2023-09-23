@@ -11,7 +11,7 @@ contract Treasury {
 	mapping(uint256 => uint256) private medical_procedure_cost;
     mapping(uint256 => uint256) private medical_procedure_probability;
 	mapping(uint256 => uint256[]) private policy; 
-	mapping(uint256 => address) private membership_nft; 
+	mapping(uint256 => address) private membership_nft;
 	mapping(uint256 => string) private policy_name;
     uint256 public loading_rate;
 	uint256 public policy_counter;
