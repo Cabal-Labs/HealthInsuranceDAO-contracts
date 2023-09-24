@@ -29,10 +29,10 @@ module.exports = async ({ deployments }) => {
     await treasury.addProcedure(399208008, b, 2) //Mammogram
 
     const currentGasPrice = await ethers.provider.getGasPrice()
-    const gasPrice = currentGasPrice.mul(2)
+    const gasPrice = currentGasPrice.mul(3)
 
     console.log("Adding Hospitals...")
-    await treasury.addHospital("Carepoint Hosptial", wallet.address, { gasPrice })
+    await treasury.addHospital("CAREPOINT", wallet.address, { gasPrice })
     console.log("Creating Insurance Policy...")
     const policyName = "Basic Policy"
     const coverage = [450501007, 399208008] // Procedure codes covered by this policy

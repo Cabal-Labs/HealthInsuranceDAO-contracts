@@ -26,6 +26,15 @@ contract Treasury {
     uint256 public loading_rate;
 	uint256 public policy_counter;
 	address public treasury_wallet;
+
+	event HospitalAdded(string hospitalName, address indexed hospitalAddress);
+    event ClaimCreated(uint256 indexed claimId, string hospitalName, address patientAddress, uint256 medicalProcedure, uint256 medicalProcedureCost);
+    event HospitalPaid(string hospitalName, uint256 paymentAmount, address indexed patientAddress, uint256 medicalProcedure);
+    event PolicyCreated(uint256 indexed policyNumber, string name, uint256[] coverage);
+    event ProcedureAdded(uint256 code, uint256 cost, uint256 probability);
+    event MembershipAddedToPolicy(uint256 indexed policy, address lock);
+    event LoadingRateChanged(uint256 newLoadingRate);
+
     constructor(address _treasury_wallet) {
         loading_rate = 10; //10% loading
 		policy_counter = 0;
@@ -34,15 +43,15 @@ contract Treasury {
 
 
     modifier onlyVoter() {
-        //require(msg.sender == voter, "Only a voter can call this function");
-        //_;
+        require(msg.sender == treasury_wallet, "Only a voter can call this function");
 		_;
     }
 
     // Add hospital to the list
-    function addHospital(string memory hospitalName, address hospitalAddress) public onlyVoter {
+    function addHospital(string memory hospitalName, address hospitalAddress) public  {
         require(hospitalList[hospitalName] == address(0), "Hospital already exists");
         hospitalList[hospitalName] = hospitalAddress;
+		emit HospitalAdded(hospitalName, hospitalAddress);
     }
 
     // Function to get the address of a hospital by name
@@ -68,6 +77,8 @@ contract Treasury {
         });
 
         claimCounter++;
+
+		emit HospitalPaid(hospital_name,  paymentAmount,   _patient_address,  medicalProcedure);
         
     }
 
@@ -87,11 +98,13 @@ contract Treasury {
 
 	function setLoadingRate(uint256 new_loading_rate) public onlyVoter {
 		loading_rate = new_loading_rate;
+		emit LoadingRateChanged(new_loading_rate);
 	} 
 
 	function addProcedure(uint256 code, uint256 cost, uint256 probability) public{
 		medical_procedure_cost[code] =cost;
 		medical_procedure_probability[code] = probability;
+		emit ProcedureAdded(code, cost, probability);
 	}
 
 	function addInsurancePolicy(string memory name, uint256[] calldata coverage) public{
@@ -99,15 +112,16 @@ contract Treasury {
 		policy[policy_counter] = coverage;
 		policy_name[policy_counter] = name;
 		policy_counter++;
-
+		emit PolicyCreated(policy_counter, name, coverage);
 	}
 
-	function addMembershipToPolicy(uint256 policy, address lock)public{
-		membership_nft[policy] = lock;
+	function addMembershipToPolicy(uint256 _policy, address lock)public{
+		membership_nft[_policy] = lock;
+		emit MembershipAddedToPolicy(_policy, lock);
 	}
 
-	function getMembershipFromPolicy(uint256 policy)public view returns(address) {
-		return membership_nft[policy];
+	function getMembershipFromPolicy(uint256 _policy)public view returns(address) {
+		return membership_nft[_policy];
 	}
 
 	function getPremium(uint256 policyNumber) public view returns(uint256){

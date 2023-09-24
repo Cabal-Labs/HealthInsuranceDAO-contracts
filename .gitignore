@@ -1,6 +1,8 @@
 # vscode
 .vscode
 
+subgraph
+subgraph2
 # hardhat
 artifacts
 cache
