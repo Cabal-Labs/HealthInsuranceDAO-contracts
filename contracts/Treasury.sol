@@ -10,7 +10,7 @@ contract Treasury {
 
     struct Claim {
         string hospitalName;
-        address patient_address;
+        address patientAddress;
         uint256 medicalProcedure;
         uint256 medicalProcedureCost;
     }
@@ -29,7 +29,7 @@ contract Treasury {
 
 	event HospitalAdded(string hospitalName, address indexed hospitalAddress);
     event ClaimCreated(uint256 indexed claimId, string hospitalName, address patientAddress, uint256 medicalProcedure, uint256 medicalProcedureCost);
-    event HospitalPaid(string hospitalName, uint256 paymentAmount, address indexed patientAddress, uint256 medicalProcedure);
+    event HospitalPaid(string hospitalName, address indexed patientAddress, uint256 medicalProcedure, uint256 medicalProcedureCost);
     event PolicyCreated(uint256 indexed policyNumber, string name, uint256[] coverage);
     event ProcedureAdded(uint256 code, uint256 cost, uint256 probability);
     event MembershipAddedToPolicy(uint256 indexed policy, address lock);
@@ -59,26 +59,34 @@ contract Treasury {
         return hospitalList[hospitalName];
     }
 
-    function payHospital(string memory hospital_name, uint256 paymentAmount, address _patient_address, uint256 medicalProcedure) public onlyVoter {
-        require(hospitalList[hospital_name] != address(0), "hospital does not exist");
-        address hospitalAddress = hospitalList[hospital_name];
+    function payHospital(
+        string memory hospitalName,
+        address patientAddress,
+        uint256 medicalProcedure
+    ) public payable onlyVoter {
+        require(
+            hospitalList[hospitalName] != address(0),
+            "Hospital does not exist"
+        );
+        address hospitalAddress = hospitalList[hospitalName];
+        uint256 medicalProcedureCost = msg.value;
 
-       // require({{Safe account address goes here( I think it's msg.sender)}}.balance >= paymentAmount, "Insufficient funds");
+        require(msg.value > 0, "Payment amount must be greater than 0");
 
         // Attempt to send the payment to the hospital address
-        (bool success, ) = hospitalAddress.call{value: paymentAmount}("");
+        (bool success, ) = hospitalAddress.call{value: msg.value}("");
         require(success, "Payment failed");
 
         claims[claimCounter] = Claim({
-            hospitalName: hospital_name,
-            patient_address: _patient_address,
+            hospitalName: hospitalName,
+            patientAddress: patientAddress,
             medicalProcedure: medicalProcedure,
-            medicalProcedureCost: paymentAmount
+            medicalProcedureCost: msg.value
         });
 
         claimCounter++;
 
-		emit HospitalPaid(hospital_name,  paymentAmount,   _patient_address,  medicalProcedure);
+		emit HospitalPaid(hospitalName,  patientAddress,  medicalProcedure, medicalProcedureCost);
         
     }
 
